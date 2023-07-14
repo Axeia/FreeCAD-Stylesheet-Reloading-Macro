@@ -1,0 +1,32 @@
+__Name__            = 'Stylesheet Refresh'
+__Comment__         = 'Refreshes the stylesheet - very useful when creating a theme and wanting to apply newly saved changes'
+__Author__          = 'Axeia'
+__Version__         = '1' 
+__Date__            = '2023-06-2023'
+__License__         = 'CC0-1.0'
+__Web__             = ''
+__Wiki__            = ''
+__Icon__            = 'https://svgur.com/i/vLj.svg'
+__Help__            = ''
+__Status__          = ''
+__Requires__        = 'FreeCAD >= v0.20'
+__Communication__   = 'https://forum.freecad.org/memberlist.php?mode=viewprofile&u=54199'
+__Files__           = ''
+
+# svg source can be found over here: https://www.svgviewer.dev/s/uVkJa2ZE
+import FreeCAD
+import sys
+import os
+from PySide2 import QtGui
+
+executingDirectoryPath = os.path.dirname(os.path.abspath(sys.argv[0]))
+stylesheetsPath = os.path.normpath(
+    os.path.join(executingDirectoryPath, '..', 'data', 'Gui', 'Stylesheets')
+) + os.path.sep
+stylesheetFileName = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/MainWindow").GetString('StyleSheet')
+mainWindowInstance = QtGui.QGuiApplication.instance()
+
+with open(stylesheetsPath + stylesheetFileName, 'r', encoding='utf-8') as f:
+    stylesheetContent = f.read()
+    mainWindowInstance.setStyleSheet(stylesheetContent)
+    FreeCAD.Console.PrintMessage(f"Reloaded {stylesheetFileName}\n")
