@@ -1,8 +1,8 @@
 __Name__            = 'Stylesheet Refresh'
 __Comment__         = 'Refreshes the stylesheet - very useful when creating a theme and wanting to apply newly saved changes'
 __Author__          = 'Axeia'
-__Version__         = '1' 
-__Date__            = '2023-06-2023'
+__Version__         = '3' 
+__Date__            = '2023-06-16'
 __License__         = 'CC0-1.0'
 __Web__             = ''
 __Wiki__            = ''
@@ -18,11 +18,21 @@ import FreeCAD
 import os
 from PySide2 import QtGui
 
-stylesheetFileName = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/MainWindow").GetString('StyleSheet')
+stylesheetFileName = FreeCAD.ParamGet(
+    "User parameter:BaseApp/Preferences/MainWindow"
+).GetString('StyleSheet')
+stylesheetsRelativePath = ['Gui', 'Stylesheets', stylesheetFileName]
 mainWindowInstance = QtGui.QGuiApplication.instance()
-stylesheetFilePath = os.path.join(FreeCAD.getResourceDir(), 'Gui', 'Stylesheets', stylesheetFileName) 
+stylesheetUserFilePath = os.path.join(FreeCAD.getUserAppDataDir(), *stylesheetsRelativePath)
+stylesheetMainFilePath = os.path.join(FreeCAD.getResourceDir(), *stylesheetsRelativePath) 
 
-with open(stylesheetFilePath, 'r', encoding='utf-8') as f:
+currentStyleSheetPath = ''
+if os.path.exists(stylesheetUserFilePath):
+    currentStyleSheetPath = stylesheetUserFilePath
+else:
+    currentStyleSheetPath = stylesheetMainFilePath
+
+with open(currentStyleSheetPath, 'r', encoding='utf-8') as f:
     stylesheetContent = f.read()
     mainWindowInstance.setStyleSheet(stylesheetContent)
-    FreeCAD.Console.PrintMessage(f"Reloaded {stylesheetFileName}\n")
+    FreeCAD.Console.PrintMessage(f"Reloaded {stylesheetFileName} from: {currentStyleSheetPath}\n")
