@@ -15,18 +15,14 @@ __Files__           = ''
 
 # svg source can be found over here: https://www.svgviewer.dev/s/uVkJa2ZE
 import FreeCAD
-import sys
 import os
 from PySide2 import QtGui
 
-executingDirectoryPath = os.path.dirname(os.path.abspath(sys.argv[0]))
-stylesheetsPath = os.path.normpath(
-    os.path.join(executingDirectoryPath, '..', 'data', 'Gui', 'Stylesheets')
-) + os.path.sep
 stylesheetFileName = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/MainWindow").GetString('StyleSheet')
 mainWindowInstance = QtGui.QGuiApplication.instance()
+stylesheetFilePath = os.path.join(FreeCAD.getResourceDir(), 'Gui', 'Stylesheets', stylesheetFileName) 
 
-with open(stylesheetsPath + stylesheetFileName, 'r', encoding='utf-8') as f:
+with open(stylesheetFilePath, 'r', encoding='utf-8') as f:
     stylesheetContent = f.read()
     mainWindowInstance.setStyleSheet(stylesheetContent)
     FreeCAD.Console.PrintMessage(f"Reloaded {stylesheetFileName}\n")
